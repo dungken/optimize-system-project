@@ -162,3 +162,46 @@ tbody tr:last-child td { border-bottom: none; }
   background: #ffebe9; border: 1px solid var(--bad); color: var(--bad);
   border-radius: 6px; padding: 10px 14px; margin: 12px 0;
 }
+
+/* ---- sơ đồ luồng query ---- */
+.flow {
+  background: var(--card);
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 8px 16px 12px;
+  margin: 12px 0;
+}
+.flow svg { display: block; }
+.flow text { font-family: system-ui, sans-serif; fill: var(--text); }
+.flowcap { font-size: 13px; color: var(--muted); text-align: center; }
+
+/* ---- lịch sử đo ---- */
+.history {
+  background: var(--card);
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 12px 0;
+}
+.hhead { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.hhead .link { margin-left: auto; }
+.htable { border: none; font-size: 13px; }
+.htable th {
+  font-size: 11px; padding: 2px 6px; border-bottom: 1px solid #eaeef2;
+}
+.htable td { padding: 3px 6px; border: none; }
+.hlabel { white-space: nowrap; font-weight: 600; }
+.hidx {
+  display: inline-block; min-width: 18px; text-align: center;
+  background: #eaeef2; color: var(--muted); border-radius: 4px;
+  font-size: 11px; font-weight: 400; margin-right: 4px;
+}
+.hbarcell { width: 22%; }
+.hbar {
+  height: 11px; border-radius: 3px; background: #8b949e; min-width: 2px;
+  transition: width .25s ease;
+}
+.hbar.best { background: var(--good); }
+.hval { white-space: nowrap; font-variant-numeric: tabular-nums; width: 70px; }
+.hval.best { color: var(--good); font-weight: 600; }
+.hfoot { margin-top: 6px; }

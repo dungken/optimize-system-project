@@ -6,6 +6,8 @@ import {
   type Meta, type Opt, type OrderItem, type OrdersQuery,
 } from './api.ts'
 import MetaBar from './MetaBar.tsx'
+import QueryFlow from './QueryFlow.tsx'
+import History, { type Run } from './History.tsx'
 
 /** 5 công tắc. Mô tả hiện khi hover — để biết đang bật/tắt cái gì. */
 const SWITCHES: { opt: Opt; label: string; hint: string }[] = [
@@ -30,6 +32,7 @@ export default function App() {
   const [nextCursor, setNextCursor] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [runs, setRuns] = useState<Run[]>([])   // lịch sử đo, mới nhất lên đầu
 
   function toggle(opt: Opt) {
     setOpts((cur) => (cur.includes(opt) ? cur.filter((o) => o !== opt) : [...cur, opt]))
@@ -49,6 +52,7 @@ export default function App() {
       setItems(res.items)
       setMeta(res.meta)
       setNextCursor(res.nextCursor)
+      setRuns((cur) => [{ meta: res.meta, at: Date.now() }, ...cur].slice(0, 12))
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
     } finally {
@@ -74,6 +78,7 @@ export default function App() {
 
       <h1>Đơn hàng</h1>
       <MetaBar meta={meta} />
+      <QueryFlow meta={meta} />
 
       <div className="panel">
         <div className="row">
@@ -132,6 +137,8 @@ export default function App() {
       </div>
 
       {error && <div className="err">Lỗi: {error}</div>}
+
+      <History runs={runs} onClear={() => setRuns([])} />
 
       <table className={loading ? 'loading' : ''}>
         <thead>
