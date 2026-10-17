@@ -12,7 +12,27 @@
 - [ ] Trang React: bảng + `MetaBar` + 5 checkbox
 - [ ] `shared_buffers=128MB` → buộc data lớn hơn cache
 
-Xong vòng 0: mở trang, thấy `⏱ 812 ms  🔍 101 query  📦 2.1 MB`. **Đó là baseline.**
+✅ **Baseline ĐO ĐƯỢC THẬT** (12 core, 2M đơn, shared_buffers=128MB):
+
+| Trường hợp | tookMs | query | bytes |
+|---|---|---|---|
+| `customerId=0&size=100` (naive) | 59 | **101** | 55.861 |
+| `customerId=123&size=100` | 140 | 2 | 1.505 |
+| trang cuối `page=19999` | **658** | 101 | 56.906 |
+
+---
+
+## ⚠️ HAI BẪY phát hiện khi đo thật
+
+**1. N+1 CHỈ xuất hiện khi `customerId=0` (tất cả).**
+Lọc theo một khách → 11 đơn đều CÙNG khách đó → Hibernate cache khách trong
+persistence context → chỉ **2 query**, không phải 12.
+→ **Vòng 2 phải chạy với `customerId=0`**, nếu không sẽ không thấy N+1.
+
+**2. `tookMs` ở trang 0 thấp hơn ở `customerId=123`** (59 vs 140).
+Vì `customerId=123` phải **Seq Scan 2M dòng** để lọc, còn trang 0 chỉ đọc
+100 dòng đầu rồi dừng.
+→ **Vòng 1 phải chạy với `customerId=123`**, nơi Seq Scan thật sự đau.
 
 ---
 

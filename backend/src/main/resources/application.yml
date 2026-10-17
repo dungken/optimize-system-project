@@ -2,6 +2,10 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/lab
     username: ${DB_USER:dungken}
+    # psql chạy được KHÔNG cần password vì dùng Unix socket (peer auth).
+    # JDBC đi TCP tới 127.0.0.1 → pg_hba bắt buộc password (md5/scram).
+    # Đặt bằng:  psql -d lab -c "ALTER ROLE $USER PASSWORD 'lab'"
+    password: ${DB_PASSWORD:lab}
     hikari:
       # VÒNG 5 đổi bằng env, không sửa file:  POOL_SIZE=100 mvn spring-boot:run
       maximum-pool-size: ${POOL_SIZE:20}

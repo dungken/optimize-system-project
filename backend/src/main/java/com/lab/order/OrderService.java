@@ -49,23 +49,22 @@ public class OrderService {
                 ? repo.findByCustomer_IdOrderById(customerId, PageRequest.of(page, size))
                 : repo.findAllByOrderById(PageRequest.of(page, size));
 
-        return rows.stream().map(this::toItemNaive).toList();
+        boolean lean = opts.contains("payload");   // VÒNG 4
+        return rows.stream().map(o -> toItem(o, lean)).toList();
     }
 
     /**
-     * Đường NAIVE: đọc customer qua quan hệ LAZY.
-     * Mỗi dòng sinh thêm MỘT câu SELECT customers → 100 dòng = 101 query.
+     * Đọc customer qua quan hệ LAZY → mỗi dòng sinh thêm MỘT câu SELECT customers.
+     * 100 dòng của 100 khách khác nhau = 101 query. Đó là N+1 của vòng 2.
      *
-     * VÒNG 2 sẽ thêm toItemFast() dùng dữ liệu đã join sẵn.
-     * VÒNG 4 sẽ thêm bản chỉ lấy 5 cột, bỏ cột `note`.
+     * @param lean true (vòng 4) → bỏ cột `note` nặng mà UI không dùng
      */
-    private OrderItem toItemNaive(Order o) {
-        return new OrderItem(
-                o.getId(),
-                o.getCustomer().getName(),      // ← LAZY, đây là N+1
-                o.getAmountCents(),
-                STATUS[o.getStatus()],
-                o.getCreatedAt().toString()
-        );
+    private OrderItem toItem(Order o, boolean lean) {
+        String name   = o.getCustomer().getName();   // ← LAZY, đây là N+1
+        String status = STATUS[o.getStatus()];
+        String at     = o.getCreatedAt().toString();
+        return lean
+                ? OrderItem.lean(o.getId(), name, o.getAmountCents(), status, at)
+                : new OrderItem(o.getId(), name, o.getAmountCents(), status, at, o.getNote());
     }
 }
