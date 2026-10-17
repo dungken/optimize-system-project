@@ -1,0 +1,11 @@
+{
+  "items": [
+    { "id": 1000001, "customerName": "Nguyen Van A", "amountCents": 125000, "status": "PAID",      "createdAt": "2026-03-01T10:00:00Z" },
+    { "id": 1000002, "customerName": "Tran Thi B",   "amountCents": 89000,  "status": "PENDING",   "createdAt": "2026-03-01T10:05:00Z" },
+    { "id": 1000003, "customerName": "Le Van C",     "amountCents": 450000, "status": "CANCELLED", "createdAt": "2026-03-01T10:12:00Z" },
+    { "id": 1000004, "customerName": "Pham Thi D",   "amountCents": 32000,  "status": "PAID",      "createdAt": "2026-03-01T10:20:00Z" },
+    { "id": 1000005, "customerName": "Hoang Van E",  "amountCents": 210000, "status": "PAID",      "createdAt": "2026-03-01T10:31:00Z" }
+  ],
+  "nextCursor": "1000005",
+  "meta": { "tookMs": 812, "queryCount": 101, "bytes": 2134567, "optsOn": [] }
+}
