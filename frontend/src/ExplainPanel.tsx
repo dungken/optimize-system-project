@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Meta } from './api.ts'
+import PlanTree from './PlanTree.tsx'
 
 /** Đánh dấu dòng quan trọng trong EXPLAIN — đây là thứ cần học đọc. */
 function classify(line: string): string {
@@ -28,6 +29,7 @@ export default function ExplainPanel({ meta, on, onToggle }:
       </button>
       {open && (
         <>
+          {meta?.explain && <PlanTree meta={meta} />}
           {meta?.explain ? (
             <pre className="explain">
               {meta.explain.split('\n').map((l, i) => (

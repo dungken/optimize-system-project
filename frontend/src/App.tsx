@@ -11,6 +11,7 @@ import History, { type Run } from './History.tsx'
 import TimeBreakdown from './TimeBreakdown.tsx'
 import SqlList from './SqlList.tsx'
 import ExplainPanel from './ExplainPanel.tsx'
+import Sweep from './Sweep.tsx'
 
 /** 5 công tắc. Mô tả hiện khi hover — để biết đang bật/tắt cái gì. */
 const SWITCHES: { opt: Opt; label: string; hint: string }[] = [
@@ -155,10 +156,9 @@ export default function App() {
 
       <History runs={runs} onClear={() => setRuns([])} />
 
-      <div className="grid2">
-        <SqlList meta={meta} />
-        <ExplainPanel meta={meta} on={explain} onToggle={setExplain} />
-      </div>
+      <Sweep opts={opts} customerId={customerId} />
+      <SqlList meta={meta} />
+      <ExplainPanel meta={meta} on={explain} onToggle={setExplain} />
 
       <details className="card" open={false}>
       <summary className="cardhead"><b>Dữ liệu</b> <span className="muted">{items.length} dòng</span></summary>

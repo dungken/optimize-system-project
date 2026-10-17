@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import type { Meta } from './api.ts'
 
+/** Xuống dòng ở từ khoá chính — SQL một dòng dài 300 ký tự thì không ai đọc. */
+function pretty(sql: string): string {
+  return sql.replace(/\s+(from|where|order by|group by|left join|inner join|join|limit|offset)\s+/gi,
+                     (_m, kw) => `\n${String(kw).toLowerCase()} `)
+}
+
 /** Danh sách SQL đã gom nhóm. Nhìn "× 100" trên một câu là hiểu N+1 ngay. */
 export default function SqlList({ meta }: { meta: Meta | null }) {
   const [open, setOpen] = useState(true)
@@ -20,7 +26,7 @@ export default function SqlList({ meta }: { meta: Meta | null }) {
           {meta.sql.map((g, i) => (
             <div key={i} className={`sqlrow ${g.count > 10 ? 'hot' : ''}`}>
               <span className={`sqlcount ${g.count > 10 ? 'hot' : ''}`}>×{g.count}</span>
-              <code>{g.sql}</code>
+              <code>{pretty(g.sql)}</code>
             </div>
           ))}
         </div>

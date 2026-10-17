@@ -16,7 +16,7 @@ body {
 }
 
 main {
-  max-width: 1000px;
+  max-width: 1180px;
   margin: 0 auto;
   padding: 16px;
 }
@@ -236,34 +236,86 @@ tbody tr:last-child td { border-bottom: none; }
   display: flex; align-items: center; gap: 10px; width: 100%;
   background: none; border: none; padding: 10px 14px; cursor: pointer;
   font-size: 14px; text-align: left; margin: 0;
+  white-space: nowrap;          /* không bẻ "2 câu khác nhau" thành từng chữ */
+  border-bottom: 1px solid #eaeef2;
 }
+.cardhead:hover { background: #f6f8fa; }
+.cardhead .muted { overflow: hidden; text-overflow: ellipsis; }
 .cardhead::-webkit-details-marker { display: none; }
 .caret { color: var(--muted); }
 .pad { padding: 10px 14px; }
-.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
-@media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+.grid2 { display: block; }
+/* Grid item mặc định min-width:auto -> nội dung rộng (pre) không chịu co,
+   bóp nát cột bên cạnh. Nếu quay lại dùng grid thì BẮT BUỘC có dòng này. */
+.grid2 > * { min-width: 0; }
 .switch.sm { font-size: 12px; padding: 1px 8px; }
 
 /* ---- SQL list ---- */
-.sqllist { padding: 0 14px 12px; }
-.sqlrow { display: flex; gap: 8px; align-items: flex-start; padding: 5px 0;
-          border-top: 1px solid #eaeef2; font-size: 12px; }
+.sqllist { padding: 4px 14px 12px; }
+.sqlrow { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0;
+          border-top: 1px solid #eaeef2; font-size: 12.5px; }
+.sqlrow:first-child { border-top: none; }
 .sqlcount {
   flex: 0 0 auto; background: #eaeef2; color: var(--muted);
   border-radius: 4px; padding: 1px 7px; font-weight: 600; font-variant-numeric: tabular-nums;
 }
 .sqlcount.hot { background: #ffebe9; color: var(--bad); }
-.sqlrow code { word-break: break-all; font-family: ui-monospace, monospace; }
+.sqlrow code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: pre-wrap;
+  word-break: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+  flex: 1 1 auto;
+  min-width: 0;
+}
 .sqlrow.hot code { color: var(--bad); }
 
 /* ---- EXPLAIN ---- */
 .explain {
-  margin: 0; padding: 10px 14px; font-size: 12px; line-height: 1.45;
-  font-family: ui-monospace, monospace; overflow-x: auto; white-space: pre;
+  margin: 0; padding: 12px 14px; font-size: 12px; line-height: 1.55;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow-x: auto; white-space: pre;
+  max-height: 460px; overflow-y: auto;
 }
+.explain div { padding: 0 4px; border-radius: 3px; }
 .explain .ex-bad  { background: #ffebe9; color: var(--bad); font-weight: 600; }
 .explain .ex-good { background: #ddf4e4; color: var(--good); font-weight: 600; }
 .explain .ex-buf  { color: var(--muted); }
 .exhint { padding: 8px 14px; border-top: 1px solid #eaeef2; font-size: 12px; color: var(--muted); }
 .exhint .ex-bad { color: var(--bad); } .exhint .ex-good { color: var(--good); }
 .card > table { border: none; border-radius: 0; }
+
+/* ---- sơ đồ cây query plan ---- */
+.plantree { padding: 10px 14px 12px; border-bottom: 1px solid #eaeef2; }
+.ptlegend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px;
+            color: var(--muted); margin-bottom: 8px; }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; }
+.dot.bad { background: var(--bad); } .dot.good { background: var(--good); }
+
+.ptrow { display: flex; align-items: center; gap: 10px; padding: 4px 0;
+         font-size: 12.5px; }
+.ptnode {
+  flex: 0 0 auto; min-width: 190px; font-family: ui-monospace, monospace;
+  padding: 2px 8px; border-radius: 4px; background: #eaeef2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ptnode.bad  { background: #ffebe9; color: var(--bad);  font-weight: 600; }
+.ptnode.good { background: #ddf4e4; color: var(--good); font-weight: 600; }
+.ptbarwrap { flex: 1 1 auto; min-width: 40px; height: 12px;
+             background: #f0f2f4; border-radius: 3px; overflow: hidden; }
+.ptbar { height: 100%; background: #8b949e; border-radius: 3px; transition: width .2s; }
+.ptbar.bad { background: var(--bad); } .ptbar.good { background: var(--good); }
+.ptms { flex: 0 0 62px; text-align: right; font-variant-numeric: tabular-nums; }
+.ptrows { flex: 0 0 auto; min-width: 96px; font-size: 11.5px; color: var(--muted);
+          font-variant-numeric: tabular-nums; }
+.ptrows.skew { color: var(--warn); font-weight: 600; }
+.ptloops { font-size: 11px; color: var(--muted); }
+
+/* ---- biểu đồ đường ---- */
+.chart { display: block; padding: 4px 8px 0; }
+.chartnote { padding: 8px 16px 12px; font-size: 13px; color: var(--muted); }
+.chartnote b { color: var(--text); }
+.cardhead.static { cursor: default; }
+.cardhead.static:hover { background: none; }
+.cardhead button { margin-left: 4px; }
