@@ -3,7 +3,7 @@
 Bán **1.000 vé** cho **50.000 người** cùng lúc. Java 21 + Spring Boot 3 + React TS.
 Chạy **native, không Docker**.
 
-👉 Toàn bộ thiết kế và lộ trình: **[ROADMAP.md](ROADMAP.md)**
+👉 Tài liệu hệ thống: **[docs/](docs/)** · Lộ trình: **[ROADMAP.md](ROADMAP.md)**
 👉 Nhật ký đo lường (sản phẩm chính): **[OPTIMIZATION_LOG.md](OPTIMIZATION_LOG.md)**
 
 ## Nguyên tắc
@@ -13,6 +13,7 @@ Không tối ưu trước khi đo được. Mọi thay đổi phải có số be
 ## Trạng thái
 - [x] Thiết kế (HLD + LLD)
 - [x] Cây thư mục
+- [x] Tài liệu (68 file, 27 sơ đồ)
 - [ ] Phase 0 — hạ tầng đo lường
 - [ ] Phase 1 — baseline
 
