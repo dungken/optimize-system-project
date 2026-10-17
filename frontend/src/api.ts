@@ -1,7 +1,8 @@
 import mock from './meta.mock.json'
 
-// Task 0.10: đổi thành false khi backend chạy thật
-export const USE_MOCK = true
+// Task 0.10 ✅ — đã nối backend thật.
+// Đặt lại true nếu muốn làm UI khi backend chưa chạy (banner đỏ sẽ hiện).
+export const USE_MOCK = false
 
 export type Opt = 'index' | 'n1' | 'page' | 'payload' | 'pool'
 
@@ -46,7 +47,14 @@ export async function fetchOrders(q: OrdersQuery): Promise<OrdersResponse> {
 
   const res = await fetch(`/api/orders?${params}`)
   if (!res.ok) throw new Error(`GET /api/orders → HTTP ${res.status}`)
-  return res.json()
+
+  // `bytes` server KHÔNG biết được (chưa serialize xong lúc dựng meta).
+  // Đo ở đây mới đúng: đây là số byte trình duyệt THẬT SỰ tải về.
+  const text = await res.text()
+  const body: OrdersResponse = JSON.parse(text)
+  const header = res.headers.get('content-length')
+  body.meta.bytes = header ? Number(header) : new Blob([text]).size
+  return body
 }
 
 // Mock: số baseline lấy từ meta.mock.json, mỗi công tắc bật thì đổi số theo mức docs dự kiến.

@@ -105,10 +105,14 @@ export default function App() {
           <input
             type="number"
             value={customerId}
-            min={1}
+            min={0}
             max={200000}
-            onChange={(e) => setCustomerId(Number(e.target.value) || 1)}
+            title="0 = tất cả đơn (vòng 3 cần cái này để OFFSET quét cả bảng)"
+            onChange={(e) => setCustomerId(Math.max(0, Number(e.target.value) || 0))}
           />
+          <button className="link" onClick={() => setCustomerId(0)} disabled={!customerId}>
+            tất cả
+          </button>
 
           <span className="rowlabel">Trang</span>
           <button onClick={() => goPage(0)}>đầu</button>

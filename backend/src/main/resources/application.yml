@@ -14,6 +14,11 @@ spring:
                               # N+1 vẫn có nhưng khó kiểm soát. Tắt → buộc mapping nằm
                               # trong @Transactional ở service, N+1 lộ ra đúng chỗ.
     show-sql: false           # vòng 2 bật lên để đếm query bằng mắt
+    properties:
+      hibernate:
+        session_factory:
+          # Task 0.7 — đếm mọi câu SQL Hibernate gửi đi
+          statement_inspector: com.lab.measure.QueryCounter
 
 server:
   port: 8080
