@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/lab
+    username: ${DB_USER:dungken}
+    hikari:
+      # VÒNG 5 đổi bằng env, không sửa file:  POOL_SIZE=100 mvn spring-boot:run
+      maximum-pool-size: ${POOL_SIZE:20}
+
+  jpa:
+    hibernate:
+      ddl-auto: none          # bảng do seed.sql tạo, JPA không được tự sửa
+    open-in-view: false       # ⚠️ QUAN TRỌNG: tắt.
+                              # Bật (mặc định Spring) thì lazy load xảy ra ở tầng view,
+                              # N+1 vẫn có nhưng khó kiểm soát. Tắt → buộc mapping nằm
+                              # trong @Transactional ở service, N+1 lộ ra đúng chỗ.
+    show-sql: false           # vòng 2 bật lên để đếm query bằng mắt
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
