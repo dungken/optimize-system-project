@@ -8,6 +8,9 @@ import {
 import MetaBar from './MetaBar.tsx'
 import QueryFlow from './QueryFlow.tsx'
 import History, { type Run } from './History.tsx'
+import TimeBreakdown from './TimeBreakdown.tsx'
+import SqlList from './SqlList.tsx'
+import ExplainPanel from './ExplainPanel.tsx'
 
 /** 5 công tắc. Mô tả hiện khi hover — để biết đang bật/tắt cái gì. */
 const SWITCHES: { opt: Opt; label: string; hint: string }[] = [
@@ -33,6 +36,7 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [runs, setRuns] = useState<Run[]>([])   // lịch sử đo, mới nhất lên đầu
+  const [explain, setExplain] = useState(false)
 
   function toggle(opt: Opt) {
     setOpts((cur) => (cur.includes(opt) ? cur.filter((o) => o !== opt) : [...cur, opt]))
@@ -62,9 +66,9 @@ export default function App() {
 
   // Gọi lại mỗi khi công tắc / khách / trang đổi. Bật công tắc là thấy số mới ngay.
   useEffect(() => {
-    void load({ opts, customerId, page, size: SIZE, cursor })
+    void load({ opts, customerId, page, size: SIZE, cursor, explain })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts, customerId, page, cursor])
+  }, [opts, customerId, page, cursor, explain])
 
   return (
     <main>
@@ -76,8 +80,19 @@ export default function App() {
         </div>
       )}
 
-      <h1>Đơn hàng</h1>
+      <header className="apphead">
+        <h1>Đơn hàng</h1>
+        {meta && (
+          <div className={`pooltile ${meta.pool.pending > 0 ? 'bad' : ''}`}>
+            <span className="muted">pool</span>
+            <b>{meta.pool.active}</b>/{meta.pool.max}
+            {meta.pool.pending > 0 && <em>{meta.pool.pending} chờ</em>}
+          </div>
+        )}
+      </header>
+
       <MetaBar meta={meta} />
+      <TimeBreakdown meta={meta} />
       <QueryFlow meta={meta} />
 
       <div className="panel">
@@ -140,6 +155,13 @@ export default function App() {
 
       <History runs={runs} onClear={() => setRuns([])} />
 
+      <div className="grid2">
+        <SqlList meta={meta} />
+        <ExplainPanel meta={meta} on={explain} onToggle={setExplain} />
+      </div>
+
+      <details className="card" open={false}>
+      <summary className="cardhead"><b>Dữ liệu</b> <span className="muted">{items.length} dòng</span></summary>
       <table className={loading ? 'loading' : ''}>
         <thead>
           <tr>
@@ -171,10 +193,10 @@ export default function App() {
           )}
         </tbody>
       </table>
+      </details>
 
       <p className="muted">
-        {items.length} dòng · size={SIZE}
-        {loading && ' · đang tải…'}
+        size={SIZE}{loading && ' · đang tải…'}
       </p>
     </main>
   )
