@@ -44,8 +44,8 @@ psql lab -f backend/seed.sql
 # 3. backend
 cd backend && mvn spring-boot:run
 
-# 4. frontend
-cd frontend && pnpm i && pnpm dev     # http://localhost:5173
+# 4. frontend — CẦN Node >= 20 (có .nvmrc)
+cd frontend && nvm use && pnpm i && pnpm dev     # http://localhost:5173
 ```
 
 ## Thời gian
