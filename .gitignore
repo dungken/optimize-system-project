@@ -1,0 +1,23 @@
+# ---- build output ----
+backend/target/
+frontend/node_modules/
+frontend/dist/
+*.class
+
+# ---- binary tải về: xoá tools/ là sạch máy ----
+tools/*
+!tools/.gitkeep
+
+# ---- output THÔ: nặng, không phải sản phẩm ----
+results/**/*.json
+results/**/*.jfr
+results/**/*.hprof
+results/**/*.jfc
+#  Giữ lại BẰNG CHỨNG của dự án: *.md *.csv *.txt *.html (flame graph)
+#  -> đừng thêm pattern loại chúng
+
+# ---- local ----
+.env
+*.log
+.idea/
+.vscode/
