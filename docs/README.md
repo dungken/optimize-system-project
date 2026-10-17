@@ -1,28 +1,53 @@
-# Tài liệu hệ thống
+# Trang danh sách đơn hàng chậm
 
-Trung tâm tài liệu của dự án. Mỗi chủ đề có **đúng một** nơi chứa — không trùng lặp.
+Một API, một trang web, một công tắc.
 
-| Thư mục | Chứa gì | Đọc khi nào |
-|---|---|---|
-| [`01-overview/`](01-overview/) | Bài toán, SLO, nguyên tắc, thuật ngữ | Ngày đầu tiên |
-| [`02-design/`](02-design/) | HLD, LLD, schema, API, capacity | Trước khi code |
-| [`03-diagrams/`](03-diagrams/) | ERD, sequence, state, architecture | Khi cần hình dung luồng |
-| [`04-phases/`](04-phases/) | 10 giai đoạn — task, checklist, số liệu | Mỗi ngày làm việc |
-| [`05-runbook/`](05-runbook/) | Cách bật/tắt, chaos, profiling | Khi vận hành |
-| [`06-decisions/`](06-decisions/) | ADR — quyết định kiến trúc + lý do | Khi quyết điều gì |
-| [`07-testing/`](07-testing/) | Chiến lược test, invariant, load profile | Khi viết test |
+Bảng `orders` có **2 triệu dòng**. Trang web hiện danh sách đơn. Ngay trên đầu trang có
+**thời gian response** và **số query DB**. Có công tắc đổi giữa hai cách viết cùng một API.
 
-## Đường đọc theo vai
+Bấm qua lại công tắc → thấy bằng mắt **800ms ↔ 10ms** trên cùng dữ liệu, cùng màn hình.
 
-**Mới vào dự án** → [bài toán](01-overview/problem.md) → [HLD](02-design/hld.md) → [architecture](03-diagrams/architecture.md) → [phase hiện tại](04-phases/)
+## 5 công tắc = 5 bài học
 
-**Bắt đầu code** → [LLD](02-design/lld.md) → [data model](02-design/data-model.md) → [API contract](02-design/api-contract.md) → [tasks của phase](04-phases/)
+| Công tắc | Naive | Fast | Thấy gì trên UI |
+|---|---|---|---|
+| `index` | không index | có index | 800ms → 10ms |
+| `n1` | lazy load | `JOIN FETCH` | số query 101 → 1 |
+| `page` | `OFFSET 1000000` | keyset cursor | trang cuối 2s → 10ms |
+| `payload` | `SELECT *` + entity | DTO chỉ cột cần | 2MB → 80KB |
+| `pool` | pool=100 | pool=20 | rps cao hơn khi tải nặng |
 
-**Đang debug hiệu năng** → [bottleneck map](03-diagrams/bottleneck-map.md) → [metrics catalog](02-design/observability.md) → [profiling](05-runbook/profiling.md)
+Mỗi công tắc độc lập. Bật/tắt từng cái để biết **cái nào đóng góp bao nhiêu**.
 
-## Quy tắc viết tài liệu
+## Tài liệu
 
-1. **Một chủ đề một file.** Trùng lặp = tài liệu sẽ lệch nhau sau 2 tuần.
-2. **Sơ đồ bằng mermaid**, không chụp ảnh. Ảnh không diff được trong git.
-3. **ADR viết ngay lúc quyết**, không viết hồi tố. Hồi tố là viết lại lịch sử.
-4. **Số liệu thuộc về [`results/`](../results/)**, không nằm trong docs. Docs nói *sẽ đo gì*, results nói *đo được gì*.
+| File | Nội dung |
+|---|---|
+| [design.md](design.md) | Schema, API, UI, cách đo |
+| [steps.md](steps.md) | 5 vòng làm — code naive vs fast, bảng điền số |
+
+## Stack
+
+Spring Boot 3 + React + TypeScript + PostgreSQL 16.
+**Không** Redis, Kafka, Docker, Grafana, k6.
+
+## Chạy
+
+```bash
+# 1. tạo DB (cần sudo một lần)
+sudo -u postgres psql -c "CREATE USER $USER SUPERUSER;" -c "CREATE DATABASE lab OWNER $USER;"
+
+# 2. seed 2M dòng (~2 phút)
+psql lab -f backend/seed.sql
+
+# 3. backend
+cd backend && mvn spring-boot:run
+
+# 4. frontend
+cd frontend && pnpm i && pnpm dev     # http://localhost:5173
+```
+
+## Thời gian
+
+~5 tiếng. Nguyên tắc duy nhất: **đo trước, sửa sau, đo lại**.
+Không có số before/after thì không gọi là tối ưu, chỉ là đổi code.
