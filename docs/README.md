@@ -25,6 +25,7 @@ Mỗi công tắc độc lập. Bật/tắt từng cái để biết **cái nào
 |---|---|
 | [design.md](design.md) | Schema, API, UI, cách đo |
 | [steps.md](steps.md) | 5 vòng làm — code naive vs fast, bảng điền số |
+| [teamwork.md](teamwork.md) | Chia việc TRUNG & DUNG — cái gì riêng, cái gì chung |
 
 ## Stack
 
